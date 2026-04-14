@@ -3,139 +3,362 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Crypto Radar - Inteligência de Influenciadores</title>
-
 <style>
+:root {
+  --bg: #0a0e14;
+  --card: #111827;
+  --card-border: rgba(255,255,255,0.08);
+  --text: #e2e8f0;
+  --text-muted: #94a3b8;
+  --primary: #38bdf8;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --radius: 12px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-    font-family: Arial;
-    background: #0d1117;
-    color: #fff;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
 }
-
 header {
-    background: #161b22;
-    padding: 20px;
-    text-align: center;
+  background: linear-gradient(180deg, #0f172a 0%, var(--bg) 100%);
+  padding: 30px 20px;
+  text-align: center;
+  border-bottom: 1px solid var(--card-border);
 }
+header h1 { font-size: 1.8rem; margin-bottom: 6px; }
+header p { color: var(--text-muted); font-size: 0.95rem; }
 
-h1 {
-    color: #58a6ff;
+.controls {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
-
-.container {
-    padding: 20px;
-}
-
 input, select {
-    padding: 10px;
-    margin: 10px 5px;
-    border-radius: 6px;
-    border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+input { flex: 1; min-width: 220px; }
+select { min-width: 140px; }
+input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(56,189,248,0.3); }
+
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
 
 .card {
-    background: #161b22;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 10px;
-    border-left: 5px solid #58a6ff;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
+
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.card-title { font-size: 1.15rem; font-weight: 600; color: var(--text); }
+.badge-verified {
+  background: rgba(34,197,94,0.15); color: var(--success);
+  padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
 }
 
-.high { border-left-color: #ff4d4d; }
-.medium { border-left-color: #ffaa00; }
-.low { border-left-color: #2ecc71; }
+.score-wrapper { margin: 8px 0; }
+.score-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+.score-track { height: 6px; background: #1e293b; border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 
-.score {
-    float: right;
-    font-weight: bold;
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; font-weight: 500;
 }
+.badge.risk-low { background: rgba(34,197,94,0.15); color: var(--success); }
+.badge.risk-med { background: rgba(234,179,8,0.15); color: var(--warning); }
+.badge.risk-high { background: rgba(239,68,68,0.15); color: var(--danger); }
+.badge.cat { background: rgba(56,189,248,0.15); color: var(--primary); cursor: pointer; }
+.badge.cat:hover { background: rgba(56,189,248,0.25); }
+.badge.cat .help { margin-left: 4px; font-size: 0.7rem; }
 
-.category {
-    color: #58a6ff;
+.desc { font-size: 0.88rem; color: var(--text-muted); margin: 8px 0; line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.tag { background: #1e293b; color: var(--text-muted); padding: 3px 8px; border-radius: 20px; font-size: 0.75rem; }
+
+.agenda { background: #0f172a; border-left: 3px solid var(--primary); padding: 8px 12px; border-radius: 6px; margin: 10px 0; }
+.agenda-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+.agenda-item { font-size: 0.82rem; color: var(--text); margin-bottom: 3px; }
+
+.card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--card-border); }
+.stats { font-size: 0.78rem; color: var(--text-muted); }
+.btn {
+  padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; font-size: 0.85rem;
+  background: var(--primary); color: #0a0e14; transition: filter 0.2s;
+}
+.btn:hover { filter: brightness(1.15); }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.modal-overlay.active { opacity: 1; pointer-events: auto; }
+.modal-content {
+  background: var(--card); border: 1px solid var(--card-border); border-radius: var(--radius);
+  padding: 24px; max-width: 420px; width: 90%; box-shadow: var(--shadow); transform: scale(0.95); transition: transform 0.2s;
+}
+.modal-overlay.active .modal-content { transform: scale(1); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.modal-title { font-size: 1.2rem; font-weight: 600; }
+.close-modal { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+.close-modal:hover { color: var(--text); }
+.modal-body { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .controls { flex-direction: column; align-items: stretch; }
+  input, select { min-width: unset; width: 100%; }
+  .grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-
 <body>
 
 <header>
-    <h1>🚀 Crypto Radar</h1>
-    <p>Terminal de Inteligência de Influenciadores Cripto</p>
+  <h1>🚀 Crypto Radar</h1>
+  <p>Terminal de Inteligência de Influenciadores Cripto</p>
 </header>
 
-<div class="container">
+<main class="controls" aria-label="Filtros e Busca">
+  <input type="text" id="search" placeholder="🔍 Buscar por nome ou tag..." aria-label="Buscar influenciador">
+  <select id="filter-cat" aria-label="Filtrar por categoria">
+    <option value="all">📁 Todas Categorias</option>
+  </select>
+  <select id="filter-risk" aria-label="Filtrar por risco">
+    <option value="all">⚖️ Todos Riscos</option>
+    <option value="low">🟢 Baixo</option>
+    <option value="medium">🟡 Médio</option>
+    <option value="high">🔴 Alto</option>
+  </select>
+  <select id="sort" aria-label="Ordenar por">
+    <option value="score">📈 Score ↓</option>
+    <option value="name">🔤 Nome A-Z</option>
+  </select>
+</main>
 
-<input type="text" id="search" placeholder="Buscar influenciador...">
-<select id="filter">
-    <option value="all">Todas Categorias</option>
-    <option value="Fundamento">Fundamento</option>
-    <option value="Narrativa">Narrativa</option>
-    <option value="DeFi">DeFi</option>
-    <option value="Airdrop">Airdrop</option>
-    <option value="Alpha">Alpha</option>
-</select>
+<section id="grid" class="grid" aria-live="polite"></section>
 
-<div id="list"></div>
-
+<div id="modal" class="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title"></span>
+      <button class="close-modal" aria-label="Fechar modal">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
 </div>
 
 <script>
+// === DADOS ===
+const categorias = {
+  "Fundamento": { desc: "Análise de fundamentos: tecnologia, adoção, tokenomics e macroeconomia. Foco no longo prazo e valor real.", cor: "#22c55e" },
+  "Narrativa": { desc: "Foca em tendências de mercado, sentimentos, ciclos de hype e narrativas emergentes do ecossistema.", cor: "#38bdf8" },
+  "DeFi": { desc: "Conteúdo sobre finanças descentralizadas: yield farming, protocolos, segurança e estratégias de alocação.", cor: "#a855f7" },
+  "Airdrop": { desc: "Oportunidades de airdrops, testes de redes, farms iniciais e guias de qualificação para distribuições.", cor: "#f59e0b" },
+  "Alpha": { desc: "Informações antecipadas, gems de baixo market cap e oportunidades de assimetria antes da massa.", cor: "#ef4444" },
+  "Dados": { desc: "Análise on-chain, métricas de mercado, fluxo de exchange e dados quantitativos para decisões embasadas.", cor: "#14b8a6" },
+  "Educacional": { desc: "Conteúdo didático, conceitos fundamentais, tutoriais e base técnica para iniciantes e intermediários.", cor: "#3b82f6" },
+  "Trading": { desc: "Análise técnica, setups operacionais, gestão de risco e operações de curto/médio prazo.", cor: "#f97316" }
+};
 
 const influencers = [
-
-{nome:"João Hazim", categoria:"Fundamento", score:7.8, risco:"low", link:"https://youtube.com/@joaohazim"},
-{nome:"BitNada", categoria:"Narrativa", score:8.5, risco:"medium", link:"https://youtube.com/@bitnada"},
-{nome:"Caio Vicentino", categoria:"DeFi", score:8.1, risco:"high", link:"https://youtube.com/@caiovicentino"},
-{nome:"CriptoCampos", categoria:"Dados", score:8.3, risco:"medium", link:"https://youtube.com/@criptocampos"},
-{nome:"Mychel Mendes", categoria:"Fiscal", score:7.9, risco:"medium", link:"https://youtube.com/@mychelmendes"},
-{nome:"Coleta Cripto", categoria:"Alpha", score:7.6, risco:"high", link:"https://youtube.com/@coletacripto"},
-{nome:"DeFi em Foco", categoria:"DeFi", score:7.9, risco:"high", link:"https://youtube.com/@defiemfoco"},
-{nome:"Ramon Cunha", categoria:"DeFi", score:7.8, risco:"high", link:"https://youtube.com/@ramon_cunha"},
-{nome:"Will Grazioli", categoria:"Análise", score:7.8, risco:"medium", link:"https://youtube.com/@willgrazioli"},
-{nome:"Rogério Menezes", categoria:"DeFi", score:8.2, risco:"high", link:"https://youtube.com/@rogeriomenezesx"},
-{nome:"Crypto Sincero", categoria:"Airdrop", score:8.1, risco:"high", link:"https://youtube.com/@cryptosincero"},
-{nome:"Rodrigo Moura", categoria:"Airdrop", score:8.1, risco:"high", link:"https://youtube.com/@rodrigomouracrypto"},
-{nome:"Crypto Gravina", categoria:"Alpha", score:7.8, risco:"high", link:"https://youtube.com/@cryptogravina"},
-{nome:"Investimento Sem KO", categoria:"Narrativa", score:8.6, risco:"medium", link:"https://youtube.com/@investimentosemko"},
-{nome:"Rafaela Romano", categoria:"Educacional", score:7.9, risco:"low", link:"https://youtube.com/@rafaelaromano"},
-{nome:"Cripthu", categoria:"Trading", score:8.1, risco:"high", link:"https://youtube.com/@cripthu"},
-{nome:"Bitcoinheiros", categoria:"Fundamento", score:8.5, risco:"low", link:"https://youtube.com/@bitcoinheiros"}
-
+  { nome:"João Hazim", categoria:"Fundamento", score:7.8, risco:"low", verificado:true, link:"https://youtube.com/@joaohazim", descricao:"Foca em análise fundamentalista de Bitcoin e cenários macroeconômicos.", seguidores:"285k", atualizado:"2026-04-12", tags:["BTC","Macro","HODL"], agenda:[{dia:"daily",hora:"07:00",tipo:"video",label:"Análise matinal"}] },
+  { nome:"BitNada", categoria:"Narrativa", score:8.5, risco:"medium", verificado:true, link:"https://youtube.com/@bitnada", descricao:"Mapeia ciclos de mercado, narrativas emergentes e psicologia do investidor.", seguidores:"310k", atualizado:"2026-04-11", tags:["Ciclos","Narrativa","Sentimento"], agenda:[{dia:["seg","quarta","sexta"],hora:"08:30",tipo:"video",label:"Morning Crypto"}] },
+  { nome:"Caio Vicentino", categoria:"DeFi", score:8.1, risco:"high", link:"https://youtube.com/@caiovicentino", descricao:"Estratégias avançadas de yield, análise de protocolos e gestão de risco em DeFi.", seguidores:"145k", atualizado:"2026-04-13", tags:["DeFi","Yield","Protocolos"], agenda:[{dia:"daily",hora:"12:00",tipo:"video",label:"DeFi ao Meio-dia"},{dia:"domingo",hora:"18:00",tipo:"live",label:"Resumo Semanal DeFi"}] },
+  { nome:"CriptoCampos", categoria:"Dados", score:8.3, risco:"medium", verificado:true, link:"https://youtube.com/@criptocampos", descricao:"Métricas on-chain, fluxo de capital institucional e análise quantitativa.", seguidores:"205k", atualizado:"2026-04-10", tags:["On-chain","Métricas","Dados"], agenda:[{dia:["seg","quarta","sexta"],hora:"09:00",tipo:"analise",label:"Dashboard On-Chain"}] },
+  { nome:"Mychel Mendes", categoria:"Fiscal", score:7.9, risco:"medium", link:"https://youtube.com/@mychelmendes", descricao:"Legislação cripto no Brasil, declaração de IR, taxação e conformidade regulatória.", seguidores:"160k", atualizado:"2026-04-09", tags:["IR","Regulatório","Impostos"], agenda:[{dia:"terca",hora:"19:30",tipo:"live",label:"Tira-dúvidas Fiscal"}] },
+  { nome:"Coleta Cripto", categoria:"Alpha", score:7.6, risco:"high", link:"https://youtube.com/@coletacripto", descricao:"Caça a gems, oportunidades pré-listagem e análise de projetos early-stage.", seguidores:"98k", atualizado:"2026-04-12", tags:["Gems","Early","Alpha"], agenda:[{dia:"quinta",hora:"21:00",tipo:"video",label:"Alpha da Semana"}] },
+  { nome:"DeFi em Foco", categoria:"DeFi", score:7.9, risco:"high", link:"https://youtube.com/@defiemfoco", descricao:"Tutoriais práticos de DeFi, bridges, staking e otimização de portfólio.", seguidores:"112k", atualizado:"2026-04-08", tags:["Staking","Bridges","Tutoriais"], agenda:[{dia:"domingo",hora:"15:00",tipo:"video",label:"DeFi Prático"}] },
+  { nome:"Ramon Cunha", categoria:"DeFi", score:7.8, risco:"high", link:"https://youtube.com/@ramon_cunha", descricao:"Estratégias de farming, análise de TVL e oportunidades em chains alternativas.", seguidores:"89k", atualizado:"2026-04-11", tags:["Farming","TVL","L2"], agenda:[{dia:"sexta",hora:"17:30",tipo:"analise",label:"Sexta em DeFi"}] },
+  { nome:"Will Grazioli", categoria:"Análise", score:7.8, risco:"medium", verificado:true, link:"https://youtube.com/@willgrazioli", descricao:"Análise técnica clássica, price action e gestão de risco para traders.", seguidores:"220k", atualizado:"2026-04-13", tags:["Price Action","AT","Risco"], agenda:[{dia:"daily",hora:"08:00",tipo:"video",label:"Open diário AT"}] },
+  { nome:"Rogério Menezes", categoria:"DeFi", score:8.2, risco:"high", link:"https://youtube.com/@rogeriomenezesx", descricao:"Focado em protocolos reais, governança e tokenomics de projetos sérios.", seguidores:"134k", atualizado:"2026-04-10", tags:["Governança","Tokenomics","Deep Dive"], agenda:[{dia:"quarta",hora:"20:00",tipo:"live",label:"Deep Dive DeFi"}] },
+  { nome:"Crypto Sincero", categoria:"Airdrop", score:8.1, risco:"high", link:"https://youtube.com/@cryptosincero", descricao:"Guias passo-a-passo para qualificação em airdrops e farms iniciais.", seguidores:"178k", atualizado:"2026-04-12", tags:["Airdrop","Farms","Guias"], agenda:[{dia:["ter","quinta"],hora:"20:00",tipo:"video",label:"Caça ao Airdrop"}] },
+  { nome:"Rodrigo Moura", categoria:"Airdrop", score:8.1, risco:"high", link:"https://youtube.com/@rodrigomouracrypto", descricao:"Estratégias de volume, testnets e maximização de chances em distribuições.", seguidores:"156k", atualizado:"2026-04-11", tags:["Testnet","Volume","Maximize"], agenda:[{dia:"domingo",hora:"10:00",tipo:"video",label:"Planejamento Semanal"}] },
+  { nome:"Crypto Gravina", categoria:"Alpha", score:7.8, risco:"high", link:"https://youtube.com/@cryptogravina", descricao:"Curadoria de oportunidades assimétricas e análise de projetos promissores.", seguidores:"92k", atualizado:"2026-04-09", tags:["Assimetria","Curadoria","Early"], agenda:[{dia:"segunda",hora:"19:00",tipo:"video",label:"Alpha da Semana"}] },
+  { nome:"Investimento Sem KO", categoria:"Narrativa", score:8.6, risco:"medium", verificado:true, link:"https://youtube.com/@investimentosemko", descricao:"Visão macro, psicologia de mercado e construção de portfólio resiliente.", seguidores:"340k", atualizado:"2026-04-13", tags:["Psicologia","Portfólio","Longo Prazo"], agenda:[{dia:"daily",hora:"07:30",tipo:"video",label:"Mindset Cripto"}] },
+  { nome:"Rafaela Romano", categoria:"Educacional", score:7.9, risco:"low", link:"https://youtube.com/@rafaelaromano", descricao:"Didática clara para iniciantes: wallets, segurança, primeiros passos e conceitos.", seguidores:"189k", atualizado:"2026-04-12", tags:["Iniciantes","Segurança","Básico"], agenda:[{dia:"terca",hora:"18:00",tipo:"live",label:"Cripto do Zero"}] },
+  { nome:"Cripthu", categoria:"Trading", score:8.1, risco:"high", link:"https://youtube.com/@cripthu", descricao:"Setup técnico, indicadores avançados e operações alavancadas com gestão.", seguidores:"125k", atualizado:"2026-04-10", tags:["Indicadores","Alavancagem","Setups"], agenda:[{dia:"daily",hora:"09:30",tipo:"video",label:"Pre-Market"}] },
+  { nome:"Bitcoinheiros", categoria:"Fundamento", score:8.5, risco:"low", verificado:true, link:"https://youtube.com/@bitcoinheiros", descricao:"Podcast e análises profundas sobre Bitcoin, soberania e filosofia cripto.", seguidores:"410k", atualizado:"2026-04-13", tags:["Podcast","Soberania","BTC"], agenda:[{dia:"quinta",hora:"21:00",tipo:"live",label:"Podcast Semanal"}] }
 ];
 
-function render(list) {
-    const container = document.getElementById("list");
-    container.innerHTML = "";
+// === HELPERS ===
+const diasPT = { daily:"Todo dia", segunda:"Seg", terca:"Ter", quarta:"Qua", quinta:"Qui", sexta:"Sex", sabado:"Sáb", domingo:"Dom" };
+const iconesTipo = { video:"🎥", live:"🔴", analise:"📊", thread:"🧵" };
+const riscoLabels = { low:"Baixo", medium:"Médio", high:"Alto" };
+const riscoClasses = { low:"risk-low", medium:"risk-med", high:"risk-high" };
 
-    list.sort((a,b)=>b.score-a.score);
-
-    list.forEach(i => {
-        container.innerHTML += `
-        <div class="card ${i.risco}">
-            <span class="score">${i.score}</span>
-            <h3>${i.nome}</h3>
-            <p class="category">${i.categoria}</p>
-            <a href="${i.link}" target="_blank">Acessar canal</a>
-        </div>
-        `;
-    });
+function getScoreColor(score) {
+  if(score >= 8.2) return "var(--success)";
+  if(score >= 7.5) return "var(--primary)";
+  return "var(--warning)";
 }
 
-render(influencers);
+function formatarAgenda(horarios) {
+  return horarios.map(h => {
+    const diaStr = Array.isArray(h.dia) ? h.dia.map(d=>diasPT[d]).join(", ") : diasPT[h.dia] || h.dia;
+    const icon = iconesTipo[h.tipo] || "📌";
+    return `${icon} ${diaStr} ${h.hora} — ${h.label || ''}`;
+  }).join("<br>");
+}
 
-document.getElementById("search").addEventListener("input", e => {
-    const val = e.target.value.toLowerCase();
-    const filtered = influencers.filter(i => i.nome.toLowerCase().includes(val));
-    render(filtered);
+function getDaysUntilNext(dias, hora) {
+  // Simulação básica para ordenação futura (não usada ativamente conforme solicitado)
+  return 0; 
+}
+
+// === RENDER ===
+const grid = document.getElementById("grid");
+const searchInput = document.getElementById("search");
+const filterCat = document.getElementById("filter-cat");
+const filterRisk = document.getElementById("filter-risk");
+const sortSelect = document.getElementById("sort");
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modal-title");
+const modalBody = document.getElementById("modal-body");
+
+// Popula select de categorias
+Object.keys(categorias).forEach(cat => {
+  const opt = document.createElement("option");
+  opt.value = cat; opt.textContent = `📁 ${cat}`;
+  filterCat.appendChild(opt);
 });
 
-document.getElementById("filter").addEventListener("change", e => {
-    const val = e.target.value;
-    if(val === "all") return render(influencers);
-    render(influencers.filter(i => i.categoria === val));
-});
+function render(list) {
+  grid.innerHTML = "";
+  if(list.length === 0) {
+    grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:var(--text-muted); padding:40px 0;">Nenhum influenciador encontrado.</p>`;
+    return;
+  }
 
+  list.forEach(i => {
+    const tagsHtml = i.tags.map(t => `<span class="tag">#${t}</span>`).join("");
+    const agendaHtml = i.agenda ? `<div class="agenda"><div class="agenda-title">🗓️ Agenda (Brasília)</div>${formatarAgenda(i.agenda)}</div>` : "";
+    const verifHtml = i.verificado ? `<span class="badge-verified">✅ Verificado</span>` : "";
+    const updatedDate = i.atualizado ? new Date(i.atualizado).toLocaleDateString("pt-BR") : "-";
+    
+    grid.innerHTML += `
+      <article class="card">
+        <div class="card-header">
+          <span class="card-title">${i.nome}</span>
+          ${verifHtml}
+        </div>
+        
+        <div class="score-wrapper">
+          <div class="score-label"><span>Score</span><span>${i.score}/10</span></div>
+          <div class="score-track">
+            <div class="score-fill" style="width:${i.score*10}%; background:${getScoreColor(i.score)}"></div>
+          </div>
+        </div>
+
+        <div class="meta">
+          <span class="badge cat" onclick="openModal('${i.categoria}')">${i.categoria} <span class="help">❓</span></span>
+          <span class="badge ${riscoClasses[i.risco]}">⚠️ ${riscoLabels[i.risco]}</span>
+        </div>
+
+        <p class="desc">${i.descricao}</p>
+        <div class="tags">${tagsHtml}</div>
+        ${agendaHtml}
+
+        <div class="card-footer">
+          <span class="stats">👥 ${i.seguidores} • 🔄 ${updatedDate}</span>
+          <a href="${i.link}" target="_blank" rel="noopener" class="btn" aria-label="Acessar canal de ${i.nome}">▶️ Canal</a>
+        </div>
+      </article>
+    `;
+  });
+}
+
+// === LÓGICA DE FILTRO/ORDENAÇÃO ===
+function applyFilters() {
+  let data = [...influencers];
+  
+  // Busca (nome + tags)
+  const q = searchInput.value.toLowerCase().trim();
+  if(q) {
+    data = data.filter(i => 
+      i.nome.toLowerCase().includes(q) || 
+      i.tags.some(t => t.toLowerCase().includes(q)) ||
+      i.descricao.toLowerCase().includes(q)
+    );
+  }
+
+  // Filtro Categoria
+  if(filterCat.value !== "all") data = data.filter(i => i.categoria === filterCat.value);
+  
+  // Filtro Risco
+  if(filterRisk.value !== "all") data = data.filter(i => i.risco === filterRisk.value);
+
+  // Ordenação
+  if(sortSelect.value === "score") data.sort((a,b) => b.score - a.score);
+  else data.sort((a,b) => a.nome.localeCompare(b.nome, "pt"));
+
+  render(data);
+  // Persiste estado
+  localStorage.setItem("cryptoRadar_filters", JSON.stringify({
+    search: searchInput.value, cat: filterCat.value, risk: filterRisk.value, sort: sortSelect.value
+  }));
+}
+
+// === MODAL ===
+window.openModal = function(cat) {
+  const info = categorias[cat];
+  modalTitle.textContent = `📚 ${cat}`;
+  modalBody.innerHTML = `
+    <p style="margin-bottom:12px;"><strong>O que é:</strong><br>${info.desc}</p>
+    <p style="color:var(--text-muted); font-size:0.85rem;">Cor do badge: <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${info.cor};margin-left:6px;"></span></p>
+  `;
+  modal.classList.add("active");
+};
+
+modal.addEventListener("click", e => {
+  if(e.target === modal) modal.classList.remove("active");
+});
+document.querySelector(".close-modal").addEventListener("click", () => modal.classList.remove("active"));
+document.addEventListener("keydown", e => { if(e.key === "Escape") modal.classList.remove("active"); });
+
+// === EVENTOS ===
+[searchInput, filterCat, filterRisk, sortSelect].forEach(el => el.addEventListener("input", applyFilters));
+[filterCat, filterRisk, sortSelect].forEach(el => el.addEventListener("change", applyFilters));
+
+// Carrega estado salvo
+const saved = JSON.parse(localStorage.getItem("cryptoRadar_filters") || "{}");
+if(saved.search) searchInput.value = saved.search;
+if(saved.cat) filterCat.value = saved.cat;
+if(saved.risk) filterRisk.value = saved.risk;
+if(saved.sort) sortSelect.value = saved.sort;
+
+// Render inicial
+applyFilters();
 </script>
 
 </body>
