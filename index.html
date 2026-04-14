@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Crypto Radar - Inteligência de Influenciadores</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0d1117;
+    color: #fff;
+}
+
+header {
+    background: #161b22;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    color: #58a6ff;
+}
+
+.container {
+    padding: 20px;
+}
+
+input, select {
+    padding: 10px;
+    margin: 10px 5px;
+    border-radius: 6px;
+    border: none;
+}
+
+.card {
+    background: #161b22;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border-left: 5px solid #58a6ff;
+}
+
+.high { border-left-color: #ff4d4d; }
+.medium { border-left-color: #ffaa00; }
+.low { border-left-color: #2ecc71; }
+
+.score {
+    float: right;
+    font-weight: bold;
+}
+
+.category {
+    color: #58a6ff;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🚀 Crypto Radar</h1>
+    <p>Terminal de Inteligência de Influenciadores Cripto</p>
+</header>
+
+<div class="container">
+
+<input type="text" id="search" placeholder="Buscar influenciador...">
+<select id="filter">
+    <option value="all">Todas Categorias</option>
+    <option value="Fundamento">Fundamento</option>
+    <option value="Narrativa">Narrativa</option>
+    <option value="DeFi">DeFi</option>
+    <option value="Airdrop">Airdrop</option>
+    <option value="Alpha">Alpha</option>
+</select>
+
+<div id="list"></div>
+
+</div>
+
+<script>
+
+const influencers = [
+
+{nome:"João Hazim", categoria:"Fundamento", score:7.8, risco:"low", link:"https://youtube.com/@joaohazim"},
+{nome:"BitNada", categoria:"Narrativa", score:8.5, risco:"medium", link:"https://youtube.com/@bitnada"},
+{nome:"Caio Vicentino", categoria:"DeFi", score:8.1, risco:"high", link:"https://youtube.com/@caiovicentino"},
+{nome:"CriptoCampos", categoria:"Dados", score:8.3, risco:"medium", link:"https://youtube.com/@criptocampos"},
+{nome:"Mychel Mendes", categoria:"Fiscal", score:7.9, risco:"medium", link:"https://youtube.com/@mychelmendes"},
+{nome:"Coleta Cripto", categoria:"Alpha", score:7.6, risco:"high", link:"https://youtube.com/@coletacripto"},
+{nome:"DeFi em Foco", categoria:"DeFi", score:7.9, risco:"high", link:"https://youtube.com/@defiemfoco"},
+{nome:"Ramon Cunha", categoria:"DeFi", score:7.8, risco:"high", link:"https://youtube.com/@ramon_cunha"},
+{nome:"Will Grazioli", categoria:"Análise", score:7.8, risco:"medium", link:"https://youtube.com/@willgrazioli"},
+{nome:"Rogério Menezes", categoria:"DeFi", score:8.2, risco:"high", link:"https://youtube.com/@rogeriomenezesx"},
+{nome:"Crypto Sincero", categoria:"Airdrop", score:8.1, risco:"high", link:"https://youtube.com/@cryptosincero"},
+{nome:"Rodrigo Moura", categoria:"Airdrop", score:8.1, risco:"high", link:"https://youtube.com/@rodrigomouracrypto"},
+{nome:"Crypto Gravina", categoria:"Alpha", score:7.8, risco:"high", link:"https://youtube.com/@cryptogravina"},
+{nome:"Investimento Sem KO", categoria:"Narrativa", score:8.6, risco:"medium", link:"https://youtube.com/@investimentosemko"},
+{nome:"Rafaela Romano", categoria:"Educacional", score:7.9, risco:"low", link:"https://youtube.com/@rafaelaromano"},
+{nome:"Cripthu", categoria:"Trading", score:8.1, risco:"high", link:"https://youtube.com/@cripthu"},
+{nome:"Bitcoinheiros", categoria:"Fundamento", score:8.5, risco:"low", link:"https://youtube.com/@bitcoinheiros"}
+
+];
+
+function render(list) {
+    const container = document.getElementById("list");
+    container.innerHTML = "";
+
+    list.sort((a,b)=>b.score-a.score);
+
+    list.forEach(i => {
+        container.innerHTML += `
+        <div class="card ${i.risco}">
+            <span class="score">${i.score}</span>
+            <h3>${i.nome}</h3>
+            <p class="category">${i.categoria}</p>
+            <a href="${i.link}" target="_blank">Acessar canal</a>
+        </div>
+        `;
+    });
+}
+
+render(influencers);
+
+document.getElementById("search").addEventListener("input", e => {
+    const val = e.target.value.toLowerCase();
+    const filtered = influencers.filter(i => i.nome.toLowerCase().includes(val));
+    render(filtered);
+});
+
+document.getElementById("filter").addEventListener("change", e => {
+    const val = e.target.value;
+    if(val === "all") return render(influencers);
+    render(influencers.filter(i => i.categoria === val));
+});
+
+</script>
+
+</body>
+</html>
